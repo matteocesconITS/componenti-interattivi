@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>3D Nike</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <a href="cart.html" class="cart-icon" title="Go to Cart"> Cart </a>
+
+    <div class="buttons">
+      <button onclick="setTexture('set1')">Texture 1</button>
+      <button onclick="setTexture('set2')">Texture 2</button>
+      <button onclick="setTexture('set3')">Texture 3</button>
+    </div>
+
+    <div class="add-to-cart">
+      <button onclick="addToCart()">Add to Cart</button>
+    </div>
+
+    <canvas id="renderCanvas"></canvas>
+
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script>
+      const canvas = document.getElementById("renderCanvas");
+      const engine = new BABYLON.Engine(canvas, true);
+      let scene,
+        shoeMesh,
+        selectedTexture = "set1";
+
+      const createScene = async () => {
+        scene = new BABYLON.Scene(engine);
+
+        // Environment
+        scene.environmentTexture = new BABYLON.HDRCubeTexture(
+          "background.hdr",
+          scene,
+          512,
+          false,
+          true,
+          false,
+          true
+        );
+
+        scene.createDefaultSkybox(scene.environmentTexture, true, 1000);
+
+        // Camera
+        const camera = new BABYLON.ArcRotateCamera(
+          "Camera",
+          Math.PI / -3.5,
+          Math.PI / 2.5,
+          20,
+          new BABYLON.Vector3(0, 0.5, 0),
+          scene
+        );
+        camera.attachControl(canvas, true);
+
+        // Light
+        const light = new BABYLON.HemisphericLight(
+          "light",
+          new BABYLON.Vector3(0, 1, 0),
+          scene
+        );
+        light.intensity = 1.0;
+
+        // Load Model
+        const result = await BABYLON.SceneLoader.ImportMeshAsync(
+          "",
+          "./model/",
+          "scarpa.glb",
+          scene
+        );
+        shoeMesh = result.meshes.find((m) => m.material);
+        shoeMesh.scaling = new BABYLON.Vector3(6, 6, 6);
+
+        // Load default texture
+        setTexture("set1");
+
+        return scene;
+      };
+
+      // Set texture
+      function setTexture(setName) {
+        selectedTexture = setName;
+
+        const path = `./textures/${setName}/shoe/`;
+
+        const mat = new BABYLON.StandardMaterial("shoeMat", scene);
+        mat.diffuseTexture = new BABYLON.Texture(path + "basecolor.png", scene);
+        mat.bumpTexture = new BABYLON.Texture(path + "normal.png", scene);
+
+        mat.diffuseTexture.vScale = -1;
+        mat.bumpTexture.vScale = -1;
+
+        shoeMesh.material = mat;
+      }
+
+      // Add to cart
+      function addToCart() {
+        const item = {
+          name: "Nike Shoe",
+          texture: selectedTexture,
+          price: 129.99,
+        };
+
+        let cart = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+        cart.push(item);
+
+        localStorage.setItem("cartItems", JSON.stringify(cart));
+
+        alert(`Added to cart: ${item.name} (${item.texture})`);
+      }
+
+      createScene().then(() => {
+        engine.runRenderLoop(() => scene.render());
+      });
+
+      window.addEventListener("resize", () => engine.resize());
+    </script>
+  </body>
+</html>
