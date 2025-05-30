@@ -12,15 +12,7 @@ function renderCart() {
           <h2>${item.name}</h2>
           <p><strong>Texture:</strong> ${item.texture}</p>
           <p><strong>Price:</strong> $${item.price}</p>
-          <button onclick="removeItem(${index})" style="
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            margin-top: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-          ">Remove</button>
+          <button class="remove" onclick="removeItem(${index})">Remove</button>
         `;
       cartDiv.appendChild(itemDiv);
     });
