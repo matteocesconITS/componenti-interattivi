@@ -74,7 +74,7 @@ function setTexture(setName) {
 // Add to cart
 function addToCart() {
   const item = {
-    name: "Nike Shoes",
+    name: "Nike Sneakers",
     texture: selectedTexture,
     price: 129.99,
   };
