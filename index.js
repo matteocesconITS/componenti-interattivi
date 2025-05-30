@@ -91,7 +91,7 @@ function addToCart() {
   document.getElementById("modal").style.display = "block";
 }
 
-// Close modal click on icon
+// Close modal click icon
 function closeModal() {
   document.getElementById("modal").style.display = "none";
 }
