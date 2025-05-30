@@ -11,7 +11,7 @@ const createScene = async () => {
   scene.environmentTexture = new BABYLON.HDRCubeTexture(
     "background.hdr",
     scene,
-    512,
+    160,
     false,
     true,
     false,
